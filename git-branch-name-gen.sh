@@ -9,7 +9,7 @@ NC=$(tput sgr0) # No color
 function validate_issue_type() {
     issue_type=$1
     case $issue_type in
-        F|B|R|H|D)
+        F|B|R|H|D|E)
             return 0
             ;;
         *)
@@ -31,7 +31,31 @@ function validate_issue_id() {
 
 # Function to generate the branch name
 function generate_branch_name() {
+
     issue_type=$1
+
+    # Replace F with feature, B with bugfix, R with release, H with hotfix, D with docs, E with refactor
+    case $issue_type in
+        F)
+            issue_type="feature"
+            ;;
+        B)
+            issue_type="bugfix"
+            ;;
+        R)
+            issue_type="release"
+            ;;
+        H)
+            issue_type="hotfix"
+            ;;
+        D)
+            issue_type="docs"
+            ;;
+        E)
+            issue_type="refactor"
+            ;;
+    esac
+
     issue_id=$(echo "$2" | tr '[:lower:]' '[:upper:]') # Convert to uppercase
     issue_name=$3
 
@@ -52,7 +76,7 @@ echo "${YELLOW}Git Branch Name Generator"
 echo "-------------------------${NC}"
 
 # Ask for the issue type
-read -p "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs):${NC} " issue_type
+read -p "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor):${NC} " issue_type
 # Validate the issue type
 until validate_issue_type "$issue_type"; do
     read -p "${RED}Invalid input. Please enter a valid issue type (${YELLOW}F${NC}, ${YELLOW}B${NC}, ${YELLOW}R${NC}, ${YELLOW}H${NC}):${NC} " issue_type
