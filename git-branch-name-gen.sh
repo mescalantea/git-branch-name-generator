@@ -76,21 +76,21 @@ echo "${YELLOW}Git Branch Name Generator"
 echo "-------------------------${NC}"
 
 # Ask for the issue type
-read -p "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor):${NC} " issue_type
+read -e -p "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor):${NC} " -i "F" issue_type
 # Validate the issue type
 until validate_issue_type "$issue_type"; do
-    read -p "${RED}Invalid input. Please enter a valid issue type (${YELLOW}F${NC}, ${YELLOW}B${NC}, ${YELLOW}R${NC}, ${YELLOW}H${NC}):${NC} " issue_type
+    read -e -p "${RED}Invalid input. Please enter a valid issue type: ${NC}" -i "F" issue_type
 done
 
 # Ask for the issue ID
-read -p "Enter the issue ID: " issue_id
+read -e -p "Enter the issue ID: " issue_id
 # Validate the issue ID
 until validate_issue_id "$issue_id"; do
-    read -p "${RED}Invalid input. Please enter a valid issue ID:${NC} " issue_id
+    read -e -p "${RED}Invalid input. Please enter a valid issue ID:${NC} " issue_id
 done
 
 # Ask for the issue name
-read -p "Enter the issue name: " issue_name
+read -e -p "Enter the issue name: " issue_name
 
 # Generate the branch name
 branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
@@ -98,7 +98,7 @@ branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
 echo "${GREEN}Generated branch name:${YELLOW} $branch_name${NC}"
 
 # Checkout to the new branch now?
-read -p "Do you want to checkout to the new branch now? (${YELLOW}y${NC}/${YELLOW}n${NC}): " checkout
+read -e -p "Do you want to checkout to the new branch now? (${YELLOW}y${NC}/${YELLOW}n${NC}): " -i "y" checkout
 if [ "$checkout" == "y" ]; then
     git checkout -b "$branch_name"
 fi
