@@ -18,6 +18,22 @@ function validate_issue_type() {
     esac
 }
 
+# Función para manejar la entrada de usuario de manera genérica
+read_input() {
+    local message="$1" # Message to show to the user
+    local default="$2"  # Default value to show in the input (only works in Linux)
+
+    if [[ "$OSTYPE" == "darwin"* || "$default" == "" ]]; then
+        # macOS does not support the -i option in the read command
+        read -e -p "$message" input_value
+    else
+        read -e -p "$message" -i "$default" input_value
+    fi
+
+    # Devolver el valor ingresado por el usuario
+    echo "$input_value"
+}
+
 # Function to validate if the issue ID is valid
 function validate_issue_id() {
     issue_id=$1
@@ -76,21 +92,21 @@ echo "${YELLOW}Git Branch Name Generator"
 echo "-------------------------${NC}"
 
 # Ask for the issue type
-read -e -p "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor):${NC} " -i "F" issue_type
+issue_type=$(read_input "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor): " "F")
 # Validate the issue type
 until validate_issue_type "$issue_type"; do
-    read -e -p "${RED}Invalid input. Please enter a valid issue type: ${NC}" -i "F" issue_type
+    issue_type=$(read_input "${RED}Invalid input. Please enter a valid issue type: ${NC}" "F")
 done
 
 # Ask for the issue ID
-read -e -p "Enter the issue ID: " issue_id
+issue_id=$(read_input "Enter the issue ID: " "")
 # Validate the issue ID
 until validate_issue_id "$issue_id"; do
-    read -e -p "${RED}Invalid input. Please enter a valid issue ID:${NC} " issue_id
+    issue_id=$(read_input "${RED}Invalid input. Please enter a valid issue ID: ${NC}" "")
 done
 
 # Ask for the issue name
-read -e -p "Enter the issue name: " issue_name
+issue_name=$(read_input "Enter the issue name: " "")
 
 # Generate the branch name
 branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
@@ -98,7 +114,7 @@ branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
 echo "${GREEN}Generated branch name:${YELLOW} $branch_name${NC}"
 
 # Checkout to the new branch now?
-read -e -p "Do you want to checkout to the new branch now? (${YELLOW}y${NC}/${YELLOW}n${NC}): " -i "y" checkout
+checkout=$(read_input "Do you want to checkout to the new branch now? (${YELLOW}y${NC}/${YELLOW}n${NC}): " "y")
 if [ "$checkout" == "y" ]; then
     git checkout -b "$branch_name"
 fi
