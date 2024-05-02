@@ -38,7 +38,7 @@ read_input() {
 function validate_issue_id() {
     issue_id=$1
     # Verifies if the issue ID contains only alphanumeric characters and hyphens
-    if [[ $issue_id =~ ^[[:alnum:]-]+$ ]]; then
+    if [[ -z $issue_id || $issue_id =~ ^[[:alnum:]-]+$ ]]; then
         return 0
     else
         return 1
@@ -72,7 +72,11 @@ function generate_branch_name() {
             ;;
     esac
 
-    issue_id=$(echo "$2" | tr '[:lower:]' '[:upper:]') # Convert to uppercase
+    issue_id=""
+    if [ -n "$2" ]; then
+        issue_id=$(echo "$2" | tr '[:lower:]' '[:upper:]') # Convert to uppercase
+        issue_id="${issue_id}-"
+    fi
     issue_name=$3
 
     # Replace spaces in the issue name with hyphens
@@ -82,7 +86,7 @@ function generate_branch_name() {
     issue_name=$(echo "$issue_name" | iconv -f utf-8 -t ascii//TRANSLIT | tr -cd '[:alnum:]-' |  tr ' ' '-')
 
     # Concatenates the fields to form the branch name
-    branch_name="${issue_type}/${issue_id}-${issue_name}"
+    branch_name="${issue_type}/${issue_id}${issue_name}"
 
     echo "$branch_name"
 }
@@ -99,7 +103,7 @@ until validate_issue_type "$issue_type"; do
 done
 
 # Ask for the issue ID
-issue_id=$(read_input "Enter the issue ID: " "")
+issue_id=$(read_input "Enter the issue ID or leave it blank: " "")
 # Validate the issue ID
 until validate_issue_id "$issue_id"; do
     issue_id=$(read_input "${RED}Invalid input. Please enter a valid issue ID: ${NC}" "")
