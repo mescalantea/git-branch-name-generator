@@ -45,6 +45,16 @@ function validate_issue_id() {
     fi
 }
 
+# Function to validate if the issue name is valid
+function validate_issue_name() {
+    issue_name=$1
+    if [[ -n $issue_name ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
 # Function to generate the branch name
 function generate_branch_name() {
 
@@ -111,6 +121,10 @@ done
 
 # Ask for the issue name
 issue_name=$(read_input "Enter the issue name: " "")
+# Validate the issue ID
+until validate_issue_name "$issue_name"; do
+    issue_name=$(read_input "${RED}Invalid input. Please enter a valid issue name: ${NC}" "")
+done
 
 # Generate the branch name
 branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
