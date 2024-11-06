@@ -93,7 +93,7 @@ function generate_branch_name() {
     issue_name=$(echo "$issue_name" | tr ' ' '-')
 
     # Replaces non-permitted characters for branch name in the issue name
-    issue_name=$(echo "$issue_name" | iconv -f utf-8 -t ascii//TRANSLIT | tr -cd '[:alnum:]-' |  tr ' ' '-')
+    issue_name=$(echo "$issue_name" | iconv -f utf-8 -t ascii//TRANSLIT | tr -cd '[:alnum:]._/-' |  tr ' ' '-')
 
     # Concatenates the fields to form the branch name
     branch_name="${issue_type}/${issue_id}${issue_name}"
