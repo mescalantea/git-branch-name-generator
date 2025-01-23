@@ -4,12 +4,13 @@ GREEN=$(tput setaf 2)
 RED=$(tput setaf 1)
 YELLOW=$(tput setaf 3)
 WHITE=$(tput setaf 7)
+CYAN=$(tput setaf 6)
 NC=$(tput sgr0) # No color
 # Function to validate if the issue type is valid
 function validate_issue_type() {
     issue_type=$1
     case $issue_type in
-        F|B|R|H|D|E)
+        a|b|c|d|e|f|h|r|s)
             return 0
             ;;
         *)
@@ -62,23 +63,32 @@ function generate_branch_name() {
 
     # Replace F with feature, B with bugfix, R with release, H with hotfix, D with docs, E with refactor
     case $issue_type in
-        F)
-            issue_type="feature"
+        a)
+            issue_type="refactor"
             ;;
-        B)
+        b)
             issue_type="bugfix"
             ;;
-        R)
-            issue_type="release"
+        c)
+            issue_type="chore"
             ;;
-        H)
-            issue_type="hotfix"
-            ;;
-        D)
+        d)
             issue_type="docs"
             ;;
-        E)
-            issue_type="refactor"
+        e)
+            issue_type="experiment"
+            ;;
+        f)
+            issue_type="feature"
+            ;;
+        h)
+            issue_type="hotfix"
+            ;;
+        r)
+            issue_type="release"
+            ;;
+        s)
+            issue_type="support"
             ;;
     esac
 
@@ -102,34 +112,50 @@ function generate_branch_name() {
 }
 
 # Wizard to generate branch names
-echo "${YELLOW}Git Branch Name Generator"
+echo "${NC}Git Branch Name Generator"
 echo "-------------------------${NC}"
 
 # Ask for the issue type
-issue_type=$(read_input "Enter the issue type (${YELLOW}F${NC} for Feature, ${YELLOW}B${NC} for Bugfix, ${YELLOW}R${NC} for Release, ${YELLOW}H${NC} for Hotfix, ${YELLOW}D${NC} for Docs, ${YELLOW}E${NC} for Refactor): " "F")
+echo "${GREEN}Choose the issue type according your scenario:"
+echo ""
+echo "a) Refactor: code refactoring"
+echo "b) Bugfix: fix well-known bugs"
+echo "c) Chore: maintenance tasks like scripting or configuration"
+echo "d) Docs: project documentation"
+echo "e) Experiment: validate ideas or concepts"
+echo "f) Feature: adding new features"
+echo "h) Hotfix: fix critical bugs in production"
+echo "r) Release: prepare a new release"
+echo "s) Support: maintenance of specific versions"
+echo ""
+
+issue_type=$(read_input "Enter your choice (${YELLOW}a${GREEN}/${YELLOW}b${GREEN}/${YELLOW}c${GREEN}/${YELLOW}d${GREEN}/${YELLOW}e${GREEN}/${YELLOW}f${GREEN}/${YELLOW}h${GREEN}/${YELLOW}r${GREEN}/${YELLOW}s${GREEN}${GREEN}): ${YELLOW}" "f")
 # Validate the issue type
 until validate_issue_type "$issue_type"; do
-    issue_type=$(read_input "${RED}Invalid input. Please enter a valid issue type: ${NC}" "F")
+    issue_type=$(read_input "${RED}Invalid input. Please enter a valid issue type: ${YELLOW}" "f")
 done
 
 # Ask for the issue ID
-issue_id=$(read_input "Enter the issue ID or leave it blank: " "")
+echo ""
+issue_id=$(read_input "${GREEN}Enter the issue ID or leave it blank: ${YELLOW}" "")
 # Validate the issue ID
 until validate_issue_id "$issue_id"; do
-    issue_id=$(read_input "${RED}Invalid input. Please enter a valid issue ID: ${NC}" "")
+    issue_id=$(read_input "${RED}Invalid input. Please enter a valid issue ID: ${YELLOW}" "")
 done
 
 # Ask for the issue name
-issue_name=$(read_input "Enter the issue name: " "")
+echo ""
+issue_name=$(read_input "${GREEN}Enter the issue name: ${YELLOW}" "")
 # Validate the issue ID
 until validate_issue_name "$issue_name"; do
-    issue_name=$(read_input "${RED}Invalid input. Please enter a valid issue name: ${NC}" "")
+    issue_name=$(read_input "${RED}Invalid input. Please enter a valid issue name: ${YELLOW}" "")
 done
 
 # Generate the branch name
 branch_name=$(generate_branch_name "$issue_type" "$issue_id" "$issue_name")
 
-echo "${GREEN}Generated branch name:${YELLOW} $branch_name${NC}"
+echo ""
+echo "${GREEN}Generated branch name:${CYAN} $branch_name${NC}"
 
 # Checkout to the new branch now?
 checkout=$(read_input "Do you want to checkout to the new branch now? (${YELLOW}y${NC}/${YELLOW}n${NC}): " "y")
