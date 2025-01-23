@@ -113,7 +113,7 @@ function generate_branch_name() {
 
 # Wizard to generate branch names
 echo "${NC}Git Branch Name Generator"
-echo "-------------------------${NC}"
+echo "-------------------------"
 
 # Ask for the issue type
 echo "${GREEN}Choose the issue type according your scenario:"
@@ -129,7 +129,7 @@ echo "r) Release: prepare a new release"
 echo "s) Support: maintenance of specific versions"
 echo ""
 
-issue_type=$(read_input "Enter your choice (${YELLOW}a${GREEN}/${YELLOW}b${GREEN}/${YELLOW}c${GREEN}/${YELLOW}d${GREEN}/${YELLOW}e${GREEN}/${YELLOW}f${GREEN}/${YELLOW}h${GREEN}/${YELLOW}r${GREEN}/${YELLOW}s${GREEN}${GREEN}): ${YELLOW}" "f")
+issue_type=$(read_input "${GREEN}Enter your choice (${YELLOW}a${GREEN}/${YELLOW}b${GREEN}/${YELLOW}c${GREEN}/${YELLOW}d${GREEN}/${YELLOW}e${GREEN}/${YELLOW}f${GREEN}/${YELLOW}h${GREEN}/${YELLOW}r${GREEN}/${YELLOW}s${GREEN}${GREEN}): ${YELLOW}" "f")
 # Validate the issue type
 until validate_issue_type "$issue_type"; do
     issue_type=$(read_input "${RED}Invalid input. Please enter a valid issue type: ${YELLOW}" "f")
